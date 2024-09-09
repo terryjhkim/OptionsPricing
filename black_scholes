@@ -1,0 +1,29 @@
+import numpy as np
+from scipy.stats import norm
+
+def black_scholes(option_type, S, X, T, r, sigma):
+
+    d1 = (np.log(S / X) + (r + 0.5 * sigma ** 2) * T) / (sigma * np.sqrt(T))
+    d2 = d1 - sigma * np.sqrt(T)
+
+    # Calculate the option price based on the type
+    if option_type == 'call':
+        option_price = S * norm.cdf(d1) - X * np.exp(-r * T) * norm.cdf(d2)
+    elif option_type == 'put':
+        option_price = X * np.exp(-r * T) * norm.cdf(-d2) - S * norm.cdf(-d1)
+    else:
+        raise ValueError("Invalid option type. Use 'call' or 'put'.")
+
+    return option_price
+
+S = 100    
+X = 105
+T = 1   
+r = 0.05   
+sigma = 0.2 
+
+call_price = black_scholes('call', S, X, T, r, sigma)
+put_price = black_scholes('put', S, X, T, r, sigma)
+
+print(f"Call Option Price: {call_price:.2f}")
+print(f"Put Option Price: {put_price:.2f}")
